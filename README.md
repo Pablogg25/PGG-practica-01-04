@@ -18,10 +18,18 @@ Antes de ejecutar los scripts, se han realizado las siguientes acciones manuales
 ## 2. Explicación de los Scripts
 
 ### `install_apache.sh`
-*Explica aquí brevemente qué hace este script (comprueba si está instalado, instala sin interacción, habilita el servicio).*
+Este script automatiza la instalación y puesta en marcha del servidor web Apache en Ubuntu Server:
+* Verifica mediante `dpkg` si el paquete `apache2` ya se encuentra instalado en el sistema para evitar ejecuciones redundantes (idempotencia).
+* Si no está instalado, actualiza los repositorios (`apt update`) e instala Apache de forma desatendida (`-y`).
+* Habilita el servicio para que arranque automáticamente con el sistema (`systemctl enable apache2`) y lo inicia (`systemctl start apache2`).
 
 ### `setup_selfsigned_certificate.sh`
-*Explica aquí brevemente qué hace este script (lee el .env, genera certificado y clave, copia configuraciones, habilita módulos/sitio, testea y reinicia).*
+Este script configura el entorno HTTPS mediante un certificado SSL/TLS autofirmado:
+* Carga las variables de entorno definidas en `scripts/.env` (país, provincia, localidad, organización, dominio, IP elástica y rutas).
+* Genera una clave privada RSA de 2048 bits y un certificado autofirmado X.509 válido por 365 días mediante `openssl`, incluyendo la extensión **SAN (Subject Alternative Name)** tanto para el dominio `practica-https.test` como para la IP Elástica.
+* Copia los archivos de configuración de los Virtual Hosts HTTP y HTTPS a `/etc/apache2/sites-available/`.
+* Activa los módulos `ssl` y `rewrite`, habilita los nuevos sitios virtuales y deshabilita el sitio por defecto (`000-default.conf`).
+* Valida la sintaxis de configuración (`apache2ctl configtest`) y reinicia el servicio de Apache para aplicar los cambios.
 
 ---
 
@@ -36,12 +44,7 @@ sudo ./scripts/install_apache.sh
 systemctl status apache2
 ```
 **Resultado:**
-```text
-[PEGAR AQUÍ LA SALIDA DE LA TERMINAL QUE MUESTRA APACHE ACTIVE Y ENABLED]
-```
-
-![Apache Instalado](Evidencias/Evidencia1.png)
-![Apache Instalado](Evidencias/Evidencia1-1.png)
+![Apache Active/Enabled](Evidencias/Evidencia1.png)
 
 ### Evidencia 2: Reejecución del script de instalación
 **Comando ejecutado:**
@@ -49,10 +52,7 @@ systemctl status apache2
 sudo ./scripts/install_apache.sh
 ```
 **Resultado:**
-```text
-[PEGAR AQUÍ LA SALIDA DE LA TERMINAL QUE MUESTRA "Apache ya está instalado"]
-```
-![Apache Instalado](Evidencias/Evidencia1-2.png)
+![Apache Instalado](Evidencias/Evidencia2.png)
 
 ### Evidencia 3: Sujeto, validez y SAN del certificado
 **Comando ejecutado:**
@@ -60,10 +60,7 @@ sudo ./scripts/install_apache.sh
 openssl x509 -in /etc/ssl/certs/apache-selfsigned.crt -noout -subject -dates -ext subjectAltName
 ```
 **Resultado:**
-```text
-[PEGAR AQUÍ LA SALIDA QUE MUESTRA LOS DATOS DE TU .ENV, LOS 365 DÍAS Y LA IP/DOMINIO]
-```
-![Apache Instalado](Evidencias/Evidencia3.png)
+![ENV](Evidencias/Evidencia3.png)
 
 ### Evidencia 4: Sintaxis de Apache
 **Comando ejecutado:**
@@ -71,10 +68,7 @@ openssl x509 -in /etc/ssl/certs/apache-selfsigned.crt -noout -subject -dates -ex
 sudo apache2ctl configtest
 ```
 **Resultado:**
-```text
-[PEGAR AQUÍ LA SALIDA QUE MUESTRA "Syntax OK"]
-```
-![Apache Instalado](Evidencias/Evidencia4.png)
+![Syntax OK](Evidencias/Evidencia4.png)
 
 ### Evidencia 5: Puertos a la escucha
 **Comando ejecutado:**
@@ -82,10 +76,7 @@ sudo apache2ctl configtest
 sudo ss -tlnp | grep apache2
 ```
 **Resultado:**
-```text
-[PEGAR AQUÍ LA SALIDA QUE MUESTRA APACHE ESCUCHANDO EN EL 80 Y 443]
-```
-![Apache Instalado](Evidencias/Evidencia5.png)
+![Puertos 80 y 443](Evidencias/Evidencia5.png)
 
 ### Evidencia 6: Redirección HTTP → HTTPS (Desde equipo local)
 **Comando ejecutado:**
@@ -93,10 +84,7 @@ sudo ss -tlnp | grep apache2
 curl -I http://practica-https.test
 ```
 **Resultado:**
-```text
-[PEGAR AQUÍ LA SALIDA QUE MUESTRA EL "HTTP/1.1 301" Y EL "Location: https://..."]
-```
-![Apache Instalado](Evidencias/Evidencia6.png)
+![Location](Evidencias/Evidencia6.png)
 
 ### Evidencia 7: Respuesta HTTPS (Desde equipo local)
 **Comando ejecutado:**
@@ -104,10 +92,7 @@ curl -I http://practica-https.test
 curl -kI https://practica-https.test
 ```
 **Resultado:**
-```text
-[PEGAR AQUÍ LA SALIDA QUE MUESTRA EL "HTTP/1.1 200 OK"]
-```
-![Apache Instalado](Evidencias/Evidencia7.png)
+![HTTP 200 OK](Evidencias/Evidencia7.png)
 
 ### Evidencia 8: Negociación TLS
 **Comando ejecutado:**
@@ -115,14 +100,11 @@ curl -kI https://practica-https.test
 openssl s_client -connect practica-https.test:443 -servername practica-https.test < /dev/null
 ```
 **Resultado:**
-```text
-[PEGAR AQUÍ EL FRAGMENTO DE LA SALIDA QUE MUESTRA LA VERSIÓN TLS Y EL CERTIFICADO]
-```
-![Apache Instalado](Evidencias/Evidencia8.png)
+![TLS Y CERTIFICADO](Evidencias/Evidencia8.png)
 
 ### Evidencia 9: Acceso desde el Navegador
 Acceso a `https://practica-https.test` aceptando el riesgo de CA no confiable.
 
 **Captura del sitio web y detalles del certificado:**
-
-![Apache Instalado](Evidencias/Evidencia9.png)
+![Detalles del certificado en Firefox](Evidencias/Evidencia9.png)
+![Web cargada por HTTPS](Evidencias/Evidencia9-1.png)
