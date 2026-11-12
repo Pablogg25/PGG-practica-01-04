@@ -1,6 +1,7 @@
 # Práctica 1.4 — HTTPS con certificado autofirmado en Apache
 
 **Alumno:** Pablo González García
+
 **Módulo:** Despliegue de Aplicaciones Web (DAW2)
 
 ---
@@ -44,6 +45,7 @@ sudo ./scripts/install_apache.sh
 systemctl status apache2
 ```
 **Resultado:**
+
 ![Apache Active/Enabled](Evidencias/Evidencia1.png)
 
 ### Evidencia 2: Reejecución del script de instalación
@@ -52,6 +54,7 @@ systemctl status apache2
 sudo ./scripts/install_apache.sh
 ```
 **Resultado:**
+
 ![Apache Instalado](Evidencias/Evidencia2.png)
 
 ### Evidencia 3: Sujeto, validez y SAN del certificado
@@ -60,6 +63,7 @@ sudo ./scripts/install_apache.sh
 openssl x509 -in /etc/ssl/certs/apache-selfsigned.crt -noout -subject -dates -ext subjectAltName
 ```
 **Resultado:**
+
 ![ENV](Evidencias/Evidencia3.png)
 
 ### Evidencia 4: Sintaxis de Apache
@@ -68,6 +72,7 @@ openssl x509 -in /etc/ssl/certs/apache-selfsigned.crt -noout -subject -dates -ex
 sudo apache2ctl configtest
 ```
 **Resultado:**
+
 ![Syntax OK](Evidencias/Evidencia4.png)
 
 ### Evidencia 5: Puertos a la escucha
@@ -76,6 +81,7 @@ sudo apache2ctl configtest
 sudo ss -tlnp | grep apache2
 ```
 **Resultado:**
+
 ![Puertos 80 y 443](Evidencias/Evidencia5.png)
 
 ### Evidencia 6: Redirección HTTP → HTTPS (Desde equipo local)
@@ -84,6 +90,7 @@ sudo ss -tlnp | grep apache2
 curl -I http://practica-https.test
 ```
 **Resultado:**
+
 ![Location](Evidencias/Evidencia6.png)
 
 ### Evidencia 7: Respuesta HTTPS (Desde equipo local)
@@ -92,6 +99,7 @@ curl -I http://practica-https.test
 curl -kI https://practica-https.test
 ```
 **Resultado:**
+
 ![HTTP 200 OK](Evidencias/Evidencia7.png)
 
 ### Evidencia 8: Negociación TLS
@@ -100,11 +108,14 @@ curl -kI https://practica-https.test
 openssl s_client -connect practica-https.test:443 -servername practica-https.test < /dev/null
 ```
 **Resultado:**
+
 ![TLS Y CERTIFICADO](Evidencias/Evidencia8.png)
 
 ### Evidencia 9: Acceso desde el Navegador
 Acceso a `https://practica-https.test` aceptando el riesgo de CA no confiable.
 
 **Captura del sitio web y detalles del certificado:**
+
 ![Detalles del certificado en Firefox](Evidencias/Evidencia9.png)
+
 ![Web cargada por HTTPS](Evidencias/Evidencia9-1.png)
