@@ -40,6 +40,9 @@ systemctl status apache2
 [PEGAR AQUÍ LA SALIDA DE LA TERMINAL QUE MUESTRA APACHE ACTIVE Y ENABLED]
 ```
 
+![Apache Instalado](Evidencias/Evidencia1.png)
+![Apache Instalado](Evidencias/Evidencia1-1.png)
+
 ### Evidencia 2: Reejecución del script de instalación
 **Comando ejecutado:**
 ```bash
@@ -49,6 +52,7 @@ sudo ./scripts/install_apache.sh
 ```text
 [PEGAR AQUÍ LA SALIDA DE LA TERMINAL QUE MUESTRA "Apache ya está instalado"]
 ```
+![Apache Instalado](Evidencias/Evidencia1-2.png)
 
 ### Evidencia 3: Sujeto, validez y SAN del certificado
 **Comando ejecutado:**
@@ -59,6 +63,7 @@ openssl x509 -in /etc/ssl/certs/apache-selfsigned.crt -noout -subject -dates -ex
 ```text
 [PEGAR AQUÍ LA SALIDA QUE MUESTRA LOS DATOS DE TU .ENV, LOS 365 DÍAS Y LA IP/DOMINIO]
 ```
+![Apache Instalado](Evidencias/Evidencia3.png)
 
 ### Evidencia 4: Sintaxis de Apache
 **Comando ejecutado:**
@@ -69,6 +74,7 @@ sudo apache2ctl configtest
 ```text
 [PEGAR AQUÍ LA SALIDA QUE MUESTRA "Syntax OK"]
 ```
+![Apache Instalado](Evidencias/Evidencia4.png)
 
 ### Evidencia 5: Puertos a la escucha
 **Comando ejecutado:**
@@ -79,6 +85,7 @@ sudo ss -tlnp | grep apache2
 ```text
 [PEGAR AQUÍ LA SALIDA QUE MUESTRA APACHE ESCUCHANDO EN EL 80 Y 443]
 ```
+![Apache Instalado](Evidencias/Evidencia5.png)
 
 ### Evidencia 6: Redirección HTTP → HTTPS (Desde equipo local)
 **Comando ejecutado:**
@@ -89,6 +96,7 @@ curl -I http://practica-https.test
 ```text
 [PEGAR AQUÍ LA SALIDA QUE MUESTRA EL "HTTP/1.1 301" Y EL "Location: https://..."]
 ```
+![Apache Instalado](Evidencias/Evidencia6.png)
 
 ### Evidencia 7: Respuesta HTTPS (Desde equipo local)
 **Comando ejecutado:**
@@ -99,6 +107,7 @@ curl -kI https://practica-https.test
 ```text
 [PEGAR AQUÍ LA SALIDA QUE MUESTRA EL "HTTP/1.1 200 OK"]
 ```
+![Apache Instalado](Evidencias/Evidencia7.png)
 
 ### Evidencia 8: Negociación TLS
 **Comando ejecutado:**
@@ -109,11 +118,11 @@ openssl s_client -connect practica-https.test:443 -servername practica-https.tes
 ```text
 [PEGAR AQUÍ EL FRAGMENTO DE LA SALIDA QUE MUESTRA LA VERSIÓN TLS Y EL CERTIFICADO]
 ```
+![Apache Instalado](Evidencias/Evidencia8.png)
 
 ### Evidencia 9: Acceso desde el Navegador
 Acceso a `https://practica-https.test` aceptando el riesgo de CA no confiable.
 
 **Captura del sitio web y detalles del certificado:**
 
-![Captura Navegador](ruta/a/tu/imagen.png) 
-*(Nota: Sube la imagen a tu repositorio y sustituye "ruta/a/tu/imagen.png" por el nombre de tu captura, o simplemente arrastra la imagen aquí si estás editando en GitHub web).*
+![Apache Instalado](Evidencias/Evidencia9.png)
