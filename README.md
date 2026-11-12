@@ -119,3 +119,25 @@ Acceso a `https://practica-https.test` aceptando el riesgo de CA no confiable.
 ![Detalles del certificado en Firefox](Evidencias/Evidencia9.png)
 
 ![Web cargada por HTTPS](Evidencias/Evidencia9-1.png)
+
+---
+
+## 4. Incidencias Encontradas y Soluciones Aplicadas
+
+Durante el desarrollo y despliegue de la práctica en AWS se presentaron los siguientes inconvenientes técnicos, que fueron resueltos de la siguiente manera:
+
+1. **Error de permisos al ejecutar los scripts (`Permission denied`):**
+   * **Problema:** Al intentar lanzar `sudo ./scripts/install_apache.sh` tras clonar el repositorio en la instancia EC2, el sistema devolvió `Permission denied (os error 13)` porque los archivos no conservaban el atributo de ejecución.
+   * **Solución:** Se asignaron permisos de ejecución a todos los scripts mediante el comando `chmod +x scripts/*.sh`.
+
+2. **Fallo de autenticación al hacer `git push` desde la instancia EC2:**
+   * **Problema:** GitHub rechazó la subida de cambios mediante contraseña (`Password authentication is not supported for Git operations`) y posteriormente denegó el acceso por SSH (`Permission denied (publickey)`) al no estar vinculada la instancia.
+   * **Solución:** Se generó un par de claves SSH (`ssh-keygen -t ed25519`) en la máquina EC2, se añadió la clave pública a la configuración de GitHub (*SSH and GPG keys*) y se actualizó la URL remota del repositorio con `git remote set-url origin`.
+
+3. **Conflictos de sincronización en Git (`fetch first` / cambios locales):**
+   * **Problema:** Al retomar la práctica y existir cambios previos tanto en la instancia remota como en el repositorio de GitHub, Git bloqueó el `git push` y el `git pull` para evitar sobrescrituras.
+   * **Solución:** Se integraron los cambios remotos mediante `git pull origin main --no-rebase`, resolviendo la fusión antes de realizar el `git push` definitivo.
+
+4. **Visualización de la extensión SAN en el navegador Firefox:**
+   * **Problema:** Al inspeccionar el certificado autofirmado en Firefox, la extensión SAN no figuraba literalmente con esas siglas.
+   * **Solución:** Se verificó dentro de la ventana *Información de la página > Seguridad > Ver certificado* en el apartado traducido **Nombres alternativos del sujeto**, comprobando que recogía tanto el `Nombre de la DNS` (`practica-https.test`) como la `Dirección IP` elástica asignada.
